@@ -1,0 +1,222 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  phone     String?  // Added phone number field
+  role      UserRole @default(STUDENT)
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student   Student?
+  alumni    Alumni?
+  admin     Admin?
+  eventRegistrations EventRegistration[] // Added event registrations relationship
+
+  @@map("users")
+}
+
+enum UserRole {
+  STUDENT
+  ALUMNI
+  ADMIN
+}
+
+model Student {
+  id           String @id @default(cuid())
+  userId       String @unique
+  studentId    String @unique
+  graduationYear Int?
+  major        String?
+  skills       String? // JSON string for skills array
+  careerGoals  String?
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mentorshipRequests MentorshipRequest[] // Sent mentorship requests
+  jobApplications    JobApplication[]    // Job applications
+
+  @@map("students")
+}
+
+model Alumni {
+  id           String @id @default(cuid())
+  userId       String @unique
+  graduationYear Int
+  major        String
+  company      String?
+  position     String?
+  industry     String?
+  location     String?
+  linkedin     String?
+  bio          String?
+  verified     Boolean @default(false) // Added verification status
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mentorshipRequests MentorshipRequest[] // Received mentorship requests
+  mentorshipOffers   MentorshipOffer[]   // Created mentorship offers
+  donations          Donation[]         // Made donations
+  postedJobs         Job[]              // Posted jobs
+
+  @@map("alumni")
+}
+
+model Admin {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+model MentorshipRequest {
+  id          String   @id @default(cuid())
+  studentId   String
+  alumniId    String
+  status      RequestStatus @default(PENDING)
+  message     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  student     Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  alumni      Alumni  @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+
+  @@map("mentorship_requests")
+}
+
+model MentorshipOffer {
+  id          String   @id @default(cuid())
+  alumniId    String
+  title       String
+  description String
+  expertise   String? // JSON string for skills array
+  availability String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  alumni      Alumni  @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+
+  @@map("mentorship_offers")
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  description String
+  location    String
+  type        String   // Full-time, Part-time, Contract, Internship, Remote
+  salary      String?
+  deadline    DateTime?
+  requirements String   // JSON string for requirements array
+  industry    String
+  experience  String   // Entry-level, Mid-level, Senior, Executive
+  postedById  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  postedBy    Alumni   @relation(fields: [postedById], references: [id], onDelete: Cascade)
+  applications JobApplication[] // Job applications
+
+  @@map("jobs")
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  jobId     String
+  studentId String
+  status    ApplicationStatus @default(APPLIED)
+  resume    String?
+  coverLetter String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job       Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("job_applications")
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWING
+  ACCEPTED
+  REJECTED
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  date        DateTime
+  location    String?
+  isVirtual   Boolean  @default(false)
+  maxAttendees Int?
+  organizedBy String   // Alumni user ID
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  registrations EventRegistration[] // Event registrations
+
+  @@map("events")
+}
+
+model EventRegistration {
+  id         String   @id @default(cuid())
+  eventId    String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  event      Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("event_registrations")
+}
+
+model SuccessStory {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  authorId    String   // User ID
+  published   Boolean  @default(false)
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("success_stories")
+}
+
+model Donation {
+  id        String   @id @default(cuid())
+  alumniId  String
+  amount    Float
+  message   String?
+  anonymous Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  alumni    Alumni  @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+
+  @@map("donations")
+}
