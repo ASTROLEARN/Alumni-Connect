@@ -55,6 +55,8 @@ export default function Home() {
       setCurrentSection(prev => prev === 'home' ? 'home' : 'home');
     } else {
       setIsAuthenticated(false);
+      // Reset to home page when user logs out
+      setCurrentSection('home');
     }
   }, [user]);
 
