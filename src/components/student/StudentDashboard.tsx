@@ -172,6 +172,13 @@ export default function StudentDashboard({ initialSection }: StudentDashboardPro
   const [activeTab, setActiveTab] = useState(initialSection || 'dashboard');
   const [socket, setSocket] = useState<Socket | null>(null);
   
+  // Update activeTab when initialSection prop changes
+  useEffect(() => {
+    if (initialSection) {
+      setActiveTab(initialSection);
+    }
+  }, [initialSection]);
+  
   // Jobs state
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
