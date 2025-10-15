@@ -73,11 +73,18 @@ export default function AlumniDonations() {
   const [impacts, setImpacts] = useState<DonationImpact[]>([]);
   const [showDonationDialog, setShowDonationDialog] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<string>('');
-  const [donationForm, setDonationForm] = useState({
+  const [donationForm, setDonationForm] = useState<{
+    amount: string;
+    currency: string;
+    donationType: 'one-time' | 'recurring' | 'pledge';
+    frequency: 'monthly' | 'quarterly' | 'annually';
+    isAnonymous: boolean;
+    message: string;
+  }>({
     amount: '',
     currency: 'USD',
-    donationType: 'one-time' as const,
-    frequency: 'monthly' as const,
+    donationType: 'one-time',
+    frequency: 'monthly',
     isAnonymous: false,
     message: ''
   });

@@ -279,7 +279,7 @@ export default function AlumniJobs() {
       experienceLevel: jobForm.experienceLevel,
       category: jobForm.category,
       alumniId: user.id,
-      alumniName: user.name
+      alumniName: user.name || 'Anonymous'
     };
 
     // Update local state

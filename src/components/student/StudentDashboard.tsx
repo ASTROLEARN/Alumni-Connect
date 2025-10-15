@@ -372,6 +372,7 @@ export default function StudentDashboard({ initialSection }: StudentDashboardPro
     },
     {
       id: '2',
+      alumniId: 'alumni2',
       alumniName: 'Michael Chen',
       alumniEmail: 'michael.chen@email.com',
       alumniRole: 'Product Manager',

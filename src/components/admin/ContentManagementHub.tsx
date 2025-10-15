@@ -273,7 +273,7 @@ export default function ContentManagementHub() {
     }
   };
 
-  const updateMentorshipStatus = async (id: string, status: 'pending' | 'accepted' | 'rejected' | 'completed') => {
+  const updateMentorshipStatus = async (id: string, status: MentorshipRequest['status']) => {
     try {
       const response = await fetch('/api/admin/mentorship/status', {
         method: 'POST',
@@ -283,7 +283,7 @@ export default function ContentManagementHub() {
 
       if (response.ok) {
         setMentorshipRequests(prev => prev.map(req => 
-          req.id === id ? { ...req, status } : req
+          req.id === id ? { ...req, status } as MentorshipRequest : req
         ));
       }
     } catch (error) {

@@ -22,7 +22,7 @@ import {
   Eye,
   MoreHorizontal,
   UserPlus,
-  Assign,
+  UserCheck,
   Activity,
   CheckSquare,
   Square,
@@ -32,7 +32,7 @@ import {
   RefreshCw,
   Tag,
   Paperclip,
-  Comment,
+  MessageCircle,
   History,
   Bell,
   Settings

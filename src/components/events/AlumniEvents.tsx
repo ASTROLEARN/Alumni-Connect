@@ -142,7 +142,7 @@ export default function AlumniEvents() {
         name: 'Sarah Johnson',
         role: 'Engineering Manager at Google',
         isAlumni: true,
-        id: session?.user?.id || 'alumni2'
+        id: 'alumni2'
       },
       tags: ['Technology', 'Career', 'Networking'],
       isRegistered: false,
@@ -275,8 +275,8 @@ export default function AlumniEvents() {
     });
   };
 
-  const isEventFull = (event: Event) => {
-    return event.maxAttendees && event.currentAttendees >= event.maxAttendees;
+  const isEventFull = (event: Event): boolean => {
+    return !!(event.maxAttendees && event.currentAttendees >= event.maxAttendees);
   };
 
   const getRegistrationStatus = (event: Event) => {
