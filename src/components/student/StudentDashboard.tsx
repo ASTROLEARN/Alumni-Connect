@@ -719,10 +719,6 @@ export default function StudentDashboard({ initialSection }: StudentDashboardPro
       {/* Profile Header */}
       <ProfileHeader 
         user={user!} 
-        onUpdate={(updatedData) => {
-          console.log('Profile updated:', updatedData);
-          // Here you would typically update the user data via API
-        }}
       />
 
       {/* Main Content - Show only the active section */}
