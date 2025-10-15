@@ -10,8 +10,8 @@ interface ProfileHeaderProps {
     phone?: string;
     location?: string;
     bio?: string;
-    // Alumni specific
     graduationYear?: number;
+    // Alumni specific
     degree?: string;
     company?: string;
     position?: string;
@@ -19,7 +19,6 @@ interface ProfileHeaderProps {
     linkedin?: string;
     // Student specific
     major?: string;
-    graduationYear?: number;
   };
 }
 
