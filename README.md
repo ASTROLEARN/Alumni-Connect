@@ -77,6 +77,24 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) to see your application running.
 
+## 🔐 Environment
+
+This project uses environment variables for secrets and configuration. A template `.env` file has been added to the repository root. To get started:
+
+1. Copy `.env` to `.env.local` (or set variables in your hosting provider).
+2. Fill in secure values for `DATABASE_URL`, `NEXTAUTH_SECRET`, `SMTP_*`, and other keys.
+3. Do not commit `.env.local` or any files containing secrets to version control.
+
+Key variables included in the template:
+
+-  `DATABASE_URL` - Prisma database connection string (Postgres, MySQL, or SQLite `file:./dev.db`).
+-  `NEXTAUTH_SECRET` - Secret used by NextAuth for signing tokens.
+-  `NEXTAUTH_URL` - Canonical site URL used by NextAuth callbacks.
+-  `NEXT_PUBLIC_SOCKET_URL` - Public URL for socket.io client connections (optional).
+-  `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` - Email sending configuration (optional).
+
+For production, use your platform's secret manager or environment configuration and ensure secrets are rotated regularly.
+
 -  **💻 Code Generation** - Generate components, pages, and features instantly
 -  **🎨 UI Development** - Create beautiful interfaces with AI assistance
 -  **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions

@@ -10,48 +10,67 @@ const hostname = '0.0.0.0';
 
 // Custom server with Socket.IO integration
 async function createCustomServer() {
-  try {
-    // Create Next.js app
-    const nextApp = next({ 
-      dev,
-      dir: process.cwd(),
-      // In production, use the current directory where .next is located
-      conf: dev ? undefined : { distDir: './.next' }
-    });
+   try {
+      // Create Next.js app
+      const nextApp = next({
+         dev,
+         dir: process.cwd(),
+         // In production, use the current directory where .next is located
+         conf: dev ? undefined : { distDir: './.next' },
+      });
 
-    await nextApp.prepare();
-    const handle = nextApp.getRequestHandler();
+      await nextApp.prepare();
+      const handle = nextApp.getRequestHandler();
 
-    // Create HTTP server that will handle both Next.js and Socket.IO
-    const server = createServer((req, res) => {
-      // Skip socket.io requests from Next.js handler
-      if (req.url?.startsWith('/api/socketio')) {
-        return;
-      }
-      handle(req, res);
-    });
+      // Create HTTP server that will handle both Next.js and Socket.IO
+      const server = createServer((req, res) => {
+         // Log incoming auth requests to help debug NextAuth client fetch errors
+         if (req.url?.startsWith('/api/auth')) {
+            console.log(`[server] ${req.method} ${req.url}`);
+         }
 
-    // Setup Socket.IO
-    const io = new Server(server, {
-      path: '/api/socketio',
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
-    });
+         // Do not prematurely return for /api/socketio. Let Next.js handle HTTP
+         // requests and Socket.IO handle upgrade requests on the same server.
+         try {
+            handle(req, res);
+         } catch (handleErr) {
+            console.error('Error in request handler:', handleErr);
+            // Ensure response is ended to avoid hanging connections
+            try {
+               res.statusCode = 500;
+               res.setHeader('content-type', 'application/json');
+               res.end(JSON.stringify({ error: 'Internal server error' }));
+            } catch (endErr) {
+               console.error(
+                  'Failed to end response after handler error:',
+                  endErr
+               );
+            }
+         }
+      });
 
-    setupSocket(io);
+      // Setup Socket.IO
+      const io = new Server(server, {
+         path: '/api/socketio',
+         cors: {
+            origin: '*',
+            methods: ['GET', 'POST'],
+         },
+      });
 
-    // Start the server
-    server.listen(currentPort, hostname, () => {
-      console.log(`> Ready on http://${hostname}:${currentPort}`);
-      console.log(`> Socket.IO server running at ws://${hostname}:${currentPort}/api/socketio`);
-    });
+      setupSocket(io);
 
-  } catch (err) {
-    console.error('Server startup error:', err);
-    process.exit(1);
-  }
+      // Start the server
+      server.listen(currentPort, hostname, () => {
+         console.log(`> Ready on http://${hostname}:${currentPort}`);
+         console.log(
+            `> Socket.IO server running at ws://${hostname}:${currentPort}/api/socketio`
+         );
+      });
+   } catch (err) {
+      console.error('Server startup error:', err);
+      process.exit(1);
+   }
 }
 
 // Start the server
