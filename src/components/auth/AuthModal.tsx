@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from '@/components/ui/badge';
 import { Chrome, Linkedin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 interface AuthModalProps {
   children: React.ReactNode;
@@ -176,52 +177,25 @@ export default function AuthModal({ children }: AuthModalProps) {
   const handleGoogleAuth = async (isSignup: boolean = false) => {
     setIsLoading(true);
     try {
-      // For demo purposes, we'll simulate Google OAuth
-      // In a real implementation, you would use NextAuth.js or similar
-      const mockGoogleUser = {
-        email: 'user@gmail.com',
-        name: 'Google User',
-        avatar: 'https://via.placeholder.com/150',
-        role: 'STUDENT' as const
-      };
+      const result = await signIn('google', {
+        redirect: false,
+        callbackUrl: '/',
+      });
 
-      if (isSignup) {
-        const result = await signup(mockGoogleUser.email, 'google-auth-123', mockGoogleUser.name, mockGoogleUser.role, '', {
-          avatar: mockGoogleUser.avatar,
-          provider: 'google'
+      if (result?.error) {
+        toast({
+          title: "Authentication failed",
+          description: "Could not sign in with Google. Please try again.",
+          variant: "destructive",
         });
-        
-        if (result.success) {
-          toast({
-            title: "Account created with Google",
-            description: "Welcome to AlumniConnect!",
-          });
-          setIsOpen(false);
-          router.refresh();
-        } else {
-          toast({
-            title: "Signup failed",
-            description: "Could not create account with Google. Please try again.",
-            variant: "destructive",
-          });
-        }
-      } else {
-        const success = await login(mockGoogleUser.email, 'google-auth-123', '');
-        
-        if (success) {
-          toast({
-            title: "Signed in with Google",
-            description: "Welcome back to AlumniConnect!",
-          });
-          setIsOpen(false);
-          router.refresh();
-        } else {
-          toast({
-            title: "Login failed",
-            description: "Could not sign in with Google. Please try again.",
-            variant: "destructive",
-          });
-        }
+      } else if (result?.ok) {
+        toast({
+          title: isSignup ? "Account created with Google" : "Signed in with Google",
+          description: "Welcome to AlumniConnect!",
+        });
+        setIsOpen(false);
+        router.refresh();
+        window.location.reload();
       }
     } catch (error) {
       toast({
@@ -237,52 +211,25 @@ export default function AuthModal({ children }: AuthModalProps) {
   const handleLinkedInAuth = async (isSignup: boolean = false) => {
     setIsLoading(true);
     try {
-      // For demo purposes, we'll simulate LinkedIn OAuth
-      // In a real implementation, you would use NextAuth.js or similar
-      const mockLinkedInUser = {
-        email: 'user@linkedin.com',
-        name: 'LinkedIn User',
-        avatar: 'https://via.placeholder.com/150',
-        role: 'ALUMNI' as const
-      };
+      const result = await signIn('linkedin', {
+        redirect: false,
+        callbackUrl: '/',
+      });
 
-      if (isSignup) {
-        const result = await signup(mockLinkedInUser.email, 'linkedin-auth-123', mockLinkedInUser.name, mockLinkedInUser.role, '', {
-          avatar: mockLinkedInUser.avatar,
-          provider: 'linkedin'
+      if (result?.error) {
+        toast({
+          title: "Authentication failed",
+          description: "Could not sign in with LinkedIn. Please try again.",
+          variant: "destructive",
         });
-        
-        if (result.success) {
-          toast({
-            title: "Account created with LinkedIn",
-            description: "Welcome to AlumniConnect!",
-          });
-          setIsOpen(false);
-          router.refresh();
-        } else {
-          toast({
-            title: "Signup failed",
-            description: "Could not create account with LinkedIn. Please try again.",
-            variant: "destructive",
-          });
-        }
-      } else {
-        const success = await login(mockLinkedInUser.email, 'linkedin-auth-123', '');
-        
-        if (success) {
-          toast({
-            title: "Signed in with LinkedIn",
-            description: "Welcome back to AlumniConnect!",
-          });
-          setIsOpen(false);
-          router.refresh();
-        } else {
-          toast({
-            title: "Login failed",
-            description: "Could not sign in with LinkedIn. Please try again.",
-            variant: "destructive",
-          });
-        }
+      } else if (result?.ok) {
+        toast({
+          title: isSignup ? "Account created with LinkedIn" : "Signed in with LinkedIn",
+          description: "Welcome to AlumniConnect!",
+        });
+        setIsOpen(false);
+        router.refresh();
+        window.location.reload();
       }
     } catch (error) {
       toast({
