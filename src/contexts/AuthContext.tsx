@@ -19,6 +19,7 @@ interface User {
   skills?: string;
   careerGoals?: string;
   // Alumni-specific fields
+  degree?: string;
   company?: string;
   position?: string;
   industry?: string;

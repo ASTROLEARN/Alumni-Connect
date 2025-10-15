@@ -644,7 +644,7 @@ export default function AlumniSuccessStories() {
     if (newComment.trim() && user) {
       const comment: Comment = {
         id: Date.now().toString(),
-        authorName: user.name,
+        authorName: user.name || 'Anonymous',
         authorAvatar: '',
         content: newComment,
         timestamp: new Date().toISOString(),
