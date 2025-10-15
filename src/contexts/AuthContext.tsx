@@ -7,6 +7,7 @@ interface User {
   email: string;
   name?: string;
   profileImage?: string;
+  avatar?: string;
   role: 'STUDENT' | 'ALUMNI' | 'ADMIN';
   verified: boolean;
   createdAt: string;
