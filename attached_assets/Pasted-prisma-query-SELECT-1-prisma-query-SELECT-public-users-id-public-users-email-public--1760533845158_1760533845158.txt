@@ -1,0 +1,60 @@
+prisma:query SELECT 1
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."password", "public"."users"."name", "public"."users"."phone", "public"."users"."role"::text, "public"."users"."verified", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" LEFT JOIN "public"."alumni" AS "j0" ON ("j0"."userId") = ("public"."users"."id") WHERE ("public"."users"."role" = CAST($1::text AS "public"."UserRole") AND ("j0"."verified" = $2 AND ("j0"."id" IS NOT NULL))) ORDER BY "public"."users"."createdAt" DESC LIMIT $3 OFFSET $4
+prisma:error 
+Invalid `prisma.user.findMany()` invocation:
+The table `public.users` does not exist in the current database.
+Error fetching recent alumni: Error [PrismaClientKnownRequestError]: 
+Invalid `prisma.user.findMany()` invocation:
+The table `public.users` does not exist in the current database.
+    at async c (.next/server/app/api/alumni/recent/route.js:1:1031) {
+  code: 'P2021',
+  meta: [Object],
+  clientVersion: '6.15.0'
+}
+[server] GET /api/auth/session
+[server] POST /api/auth/signup
+Signup request received
+Signup data: {
+  email: 'test1@gmail.com',
+  name: 'test1',
+  role: 'STUDENT',
+  phone: '0000000000',
+  passwordLength: 4,
+  universalAccess: ''
+}
+Checking for existing user...
+prisma:query SELECT 1
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."password", "public"."users"."name", "public"."users"."phone", "public"."users"."role"::text, "public"."users"."verified", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation:
+The table `public.users` does not exist in the current database.
+Signup error: Error [PrismaClientKnownRequestError]: 
+Invalid `prisma.user.findUnique()` invocation:
+The table `public.users` does not exist in the current database.
+    at async u (.next/server/app/api/auth/signup/route.js:1:2157) {
+  code: 'P2021',
+  meta: [Object],
+  clientVersion: '6.15.0'
+}
+Error stack: PrismaClientKnownRequestError: 
+Invalid `prisma.user.findUnique()` invocation:
+The table `public.users` does not exist in the current database.
+    at ei.handleRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:7268)
+    at ei.handleAndLogRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6593)
+    at ei.request (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6300)
+    at async a (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async u (/opt/render/project/src/.next/server/app/api/auth/signup/route.js:1:2157)
+    at async tf.do (/opt/render/project/src/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:18:18835)
+    at async tf.handle (/opt/render/project/src/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:18:23727)
+    at async doRender (/opt/render/project/src/node_modules/next/dist/server/base-server.js:1518:42)
+    at async NextNodeServer.renderToResponseWithComponentsImpl (/opt/render/project/src/node_modules/next/dist/server/base-server.js:1920:28)
+    at async NextNodeServer.renderPageComponent (/opt/render/project/src/node_modules/next/dist/server/base-server.js:2408:24)
+Error details: {
+  "code": "P2021",
+  "meta": {
+    "modelName": "User",
+    "table": "public.users"
+  },
+  "clientVersion": "6.15.0",
+  "name": "PrismaClientKnownRequestError"
+}
