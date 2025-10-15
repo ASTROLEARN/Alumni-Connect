@@ -14,7 +14,7 @@ interface User {
   phone?: string; // Added phone number field
   // Student-specific fields
   studentId?: string;
-  graduationYear?: string;
+  graduationYear?: number;
   major?: string;
   skills?: string;
   careerGoals?: string;
