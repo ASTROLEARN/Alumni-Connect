@@ -281,10 +281,6 @@ export default function AdminDashboard() {
         {/* Profile Header */}
         <ProfileHeader 
           user={user!} 
-          onUpdate={(updatedData) => {
-            console.log('Profile updated:', updatedData);
-            // Here you would typically update the user data via API
-          }}
         />
 
         {/* Stats Cards */}
